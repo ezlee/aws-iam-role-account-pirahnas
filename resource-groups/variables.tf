@@ -1,9 +1,4 @@
 
-variable "account_name" {
-  type        = string
-  description = "Account name tag"
-  default     = null
-}
 
 variable "project_name" {
   type        = string
