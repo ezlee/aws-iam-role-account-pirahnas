@@ -83,6 +83,11 @@ jobs:
 
     - name: 'Terraform Plan'
       run: terraform plan
+      env:
+        AWS_ACCESS_KEY_ID: ${{ steps.configure-aws.outputs.aws-access-key-id }}
+        AWS_SECRET_ACCESS_KEY: ${{ steps.configure-aws.outputs.aws-secret-access-key }}
+        AWS_SESSION_TOKEN: ${{ steps.configure-aws.outputs.aws-session-token }}
+        AWS_REGION: ${{ env.AWS_REGION }}
 
     - name: 'Terraform Apply'
       if: github.ref == 'refs/heads/main'
