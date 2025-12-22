@@ -44,7 +44,24 @@ jobs:
         echo "aws-access-key-id=$AWS_ACCESS_KEY_ID" >> $GITHUB_OUTPUT
         echo "aws-secret-access-key=$AWS_SECRET_ACCESS_KEY" >> $GITHUB_OUTPUT
         echo "aws-session-token=$AWS_SESSION_TOKEN" >> $GITHUB_OUTPUT 
-
+    - name: Debug Captured AWS Credentials Outputs
+      run: |
+       if [ -n "${{ steps.capture-aws-credentials.outputs.aws-access-key-id }}" ]; then
+         echo "AWS Access Key ID is set (value masked for security)"
+       else
+         echo "AWS Access Key ID is NOT set"
+       fi
+       if [ -n "${{ steps.capture-aws-credentials.outputs.aws-secret-access-key }}" ]; then
+         echo "AWS Secret Access Key is set (value masked for security)"
+       else
+         echo "AWS Secret Access Key is NOT set"
+       fi
+       if [ -n "${{ steps.capture-aws-credentials.outputs.aws-session-token }}" ]; then
+         echo "AWS Session Token is set (value masked for security)"
+       else
+         echo "AWS Session Token is NOT set"
+       fi
+       
     - name: Debug AWS Credentials
       run: |
         echo "AWS_ACCESS_KEY_ID is set to: $AWS_ACCESS_KEY_ID (masked)"
