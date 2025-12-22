@@ -52,6 +52,7 @@ jobs:
         echo "AWS_SESSION_TOKEN is set to: $AWS_SESSION_TOKEN (masked)"
         echo "AWS_REGION=$AWS_REGION"
         aws sts get-caller-identity
+        echo $GITHUB_OUTPUT
 
     - name: 'Set up Terraform with AWS credentials'
       uses: hashicorp/setup-terraform@v1
