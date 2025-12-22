@@ -40,8 +40,12 @@ jobs:
 
     - name: Debug AWS Credentials
       run: |
+        echo "AWS_ACCESS_KEY_ID is set to: $AWS_ACCESS_KEY_ID (masked)"
+        echo "AWS_SECRET_ACCESS_KEY is set to: $AWS_SECRET_ACCESS_KEY (masked)"
+        echo "AWS_SESSION_TOKEN is set to: $AWS_SESSION_TOKEN (masked)"
         echo "AWS_REGION=$AWS_REGION"
         aws sts get-caller-identity
+
     - name: 'Set up Terraform with AWS credentials'
       uses: hashicorp/setup-terraform@v1
       with:
