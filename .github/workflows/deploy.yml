@@ -42,8 +42,8 @@ jobs:
       run: |
         aws sts get-caller-identity
         env|grep -E "^(AWS_|TFC_)"
-        chmod +x scripts/update_tfc_vars.sh
-        bash scripts/update_tfc_vars.sh \
+        chmod +x ../scripts/update_tfc_vars.sh
+        bash ../scripts/update_tfc_vars.sh \
         ${{ env.TFC_WORKSPACE_ID }} \
         ${{ env.TFC_API_TOKEN }} \
         ${{ env.AWS_ACCESS_KEY_ID }} \
