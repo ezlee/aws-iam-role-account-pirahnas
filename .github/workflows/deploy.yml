@@ -38,38 +38,24 @@ jobs:
         role-to-assume: arn:aws:iam::${{ secrets.ACCOUNT_ID }}:role/${{ secrets.GH_ACTION_DEPLOY_ROLE }}
         role-session-name: github-actions-session
 
-    - name: Capture AWS Credentials as Outputs
-      id: capture-aws-credentials
+    - name: Push Assumed Role Credentials to Terraform workspace
       run: |
-        echo "aws-access-key-id=$AWS_ACCESS_KEY_ID" >> $GITHUB_OUTPUT
-        echo "aws-secret-access-key=$AWS_SECRET_ACCESS_KEY" >> $GITHUB_OUTPUT
-        echo "aws-session-token=$AWS_SESSION_TOKEN" >> $GITHUB_OUTPUT 
-    - name: Debug Captured AWS Credentials Outputs
-      run: |
-       if [ -n "${{ steps.capture-aws-credentials.outputs.aws-access-key-id }}" ]; then
-         echo "AWS Access Key ID is set (value masked for security)"
-       else
-         echo "AWS Access Key ID is NOT set"
-       fi
-       if [ -n "${{ steps.capture-aws-credentials.outputs.aws-secret-access-key }}" ]; then
-         echo "AWS Secret Access Key is set (value masked for security)"
-       else
-         echo "AWS Secret Access Key is NOT set"
-       fi
-       if [ -n "${{ steps.capture-aws-credentials.outputs.aws-session-token }}" ]; then
-         echo "AWS Session Token is set (value masked for security)"
-       else
-         echo "AWS Session Token is NOT set"
-       fi
-       
-    - name: Debug AWS Credentials
-      run: |
-        echo "AWS_ACCESS_KEY_ID is set to: $AWS_ACCESS_KEY_ID (masked)"
-        echo "AWS_SECRET_ACCESS_KEY is set to: $AWS_SECRET_ACCESS_KEY (masked)"
-        echo "AWS_SESSION_TOKEN is set to: $AWS_SESSION_TOKEN (masked)"
-        echo "AWS_REGION=$AWS_REGION"
         aws sts get-caller-identity
-        echo $GITHUB_OUTPUT
+        env|grep -E "^(AWS_|TFC_)"
+        chmod +x scripts/update_tfc_vars.sh
+        bash scripts/update_tfc_vars.sh \
+        ${{ env.TFC_WORKSPACE_ID }} \
+        ${{ env.TFC_API_TOKEN }} \
+        ${{ env.AWS_ACCESS_KEY_ID }} \
+        ${{ env.AWS_SECRET_ACCESS_KEY }} \
+        ${{ env.AWS_SESSION_TOKEN }}
+      env:
+        WORKSPACE_ID: ${{ secrets.TFC_WORKSPACE_ID }}
+        TFC_API_TOKEN: ${{ secrets.TFC_API_TOKEN }}
+        AWS_ACCESS_KEY_ID: ${{ env.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ env.AWS_SECRET_ACCESS_KEY }}
+        AWS_SESSION_TOKEN: ${{ env.AWS_SESSION_TOKEN }}
+      shell: bash
 
     - name: 'Set up Terraform with AWS credentials'
       uses: hashicorp/setup-terraform@v1
@@ -112,11 +98,6 @@ jobs:
 
     - name: 'Terraform Plan'
       run: terraform plan
-      env:
-        AWS_ACCESS_KEY_ID: ${{ steps.capture-aws-credentials.outputs.aws-access-key-id }}
-        AWS_SECRET_ACCESS_KEY: ${{ steps.capture-aws-credentials.outputs.aws-secret-access-key }}
-        AWS_SESSION_TOKEN: ${{ steps.capture-aws-credentials.outputs.aws-session-token }}
-        AWS_REGION: ${{ env.AWS_REGION }}
 
     - name: 'Terraform Apply'
       if: github.ref == 'refs/heads/main'
