@@ -38,6 +38,10 @@ jobs:
         role-to-assume: arn:aws:iam::${{ secrets.ACCOUNT_ID }}:role/${{ secrets.GH_ACTION_DEPLOY_ROLE }}
         role-session-name: github-actions-session
 
+    - name: Debug AWS Credentials
+      run: |
+        echo "AWS_REGION=$AWS_REGION"
+        aws sts get-caller-identity
     - name: 'Set up Terraform with AWS credentials'
       uses: hashicorp/setup-terraform@v1
       with:
