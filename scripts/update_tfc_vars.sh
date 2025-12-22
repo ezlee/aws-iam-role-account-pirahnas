@@ -9,6 +9,8 @@ AWS_SECRET_ACCESS_KEY=$4
 AWS_SESSION_TOKEN=$5
 
 # Check if the variable AWS_ACCESS_KEY_ID exists
+echo "Checking if AWS_ACCESS_KEY_ID variable exists..."
+
 EXISTING_AWS_ACCESS_KEY_ID=$(curl --silent --request GET \
   --url "https://app.terraform.io/api/v2/workspaces/$TFC_WORKSPACE_ID/vars" \
   --header "Authorization: Bearer $TFC_API_TOKEN" \
@@ -17,7 +19,7 @@ EXISTING_AWS_ACCESS_KEY_ID=$(curl --silent --request GET \
 if [ -n "$EXISTING_AWS_ACCESS_KEY_ID" ]; then
   # Update the existing variable
   curl --silent --request PATCH \
-    --url "https://app.terraform.io/api/v2/vars/$EXISTING_ACCESS_KEY_ID" \
+    --url "https://app.terraform.io/api/v2/vars/$EXISTING_AWS_ACCESS_KEY_ID" \
     --header "Authorization: Bearer $TFC_API_TOKEN" \
     --header "Content-Type: application/vnd.api+json" \
     --data '{
@@ -53,6 +55,7 @@ else
 fi
 
 # Check if the variable AWS_SECRET_ACCESS_KEY exists
+echo "Checking if AWS_SECRET_ACCESS_KEY variable exists..."
 EXISTING_AWS_SECRET_ACCESS_KEY=$(curl --silent --request GET \
   --url "https://app.terraform.io/api/v2/workspaces/$TFC_WORKSPACE_ID/vars" \
   --header "Authorization: Bearer $TFC_API_TOKEN" \
@@ -97,6 +100,7 @@ else
 fi
 
 # Check if the variable AWS_SESSION_TOKEN exists
+echo "Checking if AWS_SESSION_TOKEN variable exists..."
 EXISTING_AWS_SESSION_TOKEN=$(curl --silent --request GET \
   --url "https://app.terraform.io/api/v2/workspaces/$TFC_WORKSPACE_ID/vars" \
   --header "Authorization: Bearer $TFC_API_TOKEN" \
