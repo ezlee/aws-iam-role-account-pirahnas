@@ -1,13 +1,8 @@
 name: Resource Groups Terraform CI/CD
-
 on:
   push:
     branches:
-      - main
       - release/dev
-  pull_request:
-    branches:
-      - main
 
 jobs:
   terraform:
